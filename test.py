@@ -2,7 +2,24 @@ import functions
 import os
 import getpass
 import os.path
-import random
+import unittest.mock as mock
+from unittest.mock import patch
+import pytest
+
+
+##From 
+
+#input function for passing input to function that need it
+def geninputs():
+    inputs = ["3","1"]
+
+    for item in inputs:
+        yield item
+
+
+#sets up our inputs
+GEN = geninputs()
+
 
 #get windows/linux username for path
 user=getpass.getuser()
@@ -13,6 +30,12 @@ user=getpass.getuser()
 #path for testing
 FILE="/home/{user}/Documents/Using-Pytest-Methods-and-Tools-22/testing.txt"
 FILE1="/home/{user}/Documents/Using-Pytest-Methods-and-Tools-22/testing1.txt"
+
+@pytest.yield_fixture
+def fake_input():
+    with mock.patch('functions.my_input') as m:
+        yield m
+
 
 
 #testing openFile()
@@ -97,21 +120,35 @@ FILE1="/home/{user}/Documents/Using-Pytest-Methods-and-Tools-22/testing1.txt"
 
 
 
+#input testing
+
 # #testing divide()
-def test_divide():
-    monkeypatch.setattr('builtins.input', lambda _: 3) #while monkeypatching (:]) has a broader scope than just mocking, i am using it here for mocking
-    monkeypatch.setattr('builtins.input', lambda _: 1)
-    assert functions.divide(3,1)==3 
+def test_divide(monkeypatch):
+    monkeypatch.setattr('builtins.input',lambda _: next(GEN))
+    captured_stdout, captured_stderr = capsys.readouterr()
+    assert captured_stdout.strip() == "Your numbers divided is: 3.0"
+    assert functions.divide()==3.0
 
-def test_dividebyzero():
-    monkeypatch.setattr('builtins.input', lambda _: 3)
-    monkeypatch.setattr('builtins.input', lambda _: 0)
-    assert div==0
 
-def test_divide_invalidtype():
-    monkeypatch.setattr('builtins.input', lambda _: "three")
-    monkeypatch.setattr('builtins.input', lambda _: "one")
-    assert div==3
+
+
+    #output testing
+    # from: https://docs.pytest.org/en/6.2.x/capture.html
+# def test_divideoutput(capsys):
+
+# captured_stdout, captured_stderr = capsys.readouterr()
+# assert captured_stdout.strip() == 3
+
+
+# def test_dividebyzero():
+#     monkeypatch.setattr('builtins.input', lambda _: 3)
+#     monkeypatch.setattr('builtins.input', lambda _: 0)
+#     assert div==0
+
+# def test_divide_invalidtype():
+#     monkeypatch.setattr('builtins.input', lambda _: "three")
+#     monkeypatch.setattr('builtins.input', lambda _: "one")
+#     assert div==3
 
 
 

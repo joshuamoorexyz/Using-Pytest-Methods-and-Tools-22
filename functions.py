@@ -1,5 +1,11 @@
 import math
 
+
+
+
+
+
+        
 ## opens a file in read mode
 ## filename received as a parameter
 def openFile(filename):
@@ -33,13 +39,19 @@ def isPalindrome(temp):
 
 ## has input to receive two numbers
 ## divides the two, then outputs the result
+
+
+    #requires input testing
 def divide():
     num1 = int(input("Enter a number: "))
     num2 = int(input("Enter another number: "))
-
-    div = num1 / num2
-
+    div = num1/num2
     print("Your numbers divided is:", div)
+
+    #since we dont return the value of div, we have to do output testing as well
+
+
+
 
 ## returns the squareroot of a particular number
 def sq(num):
